@@ -1,0 +1,253 @@
+#DFS
+graph = {
+    'A':['B','C','D'],
+    'B':['E'],
+    'C':['D','E'],
+    'D':[],
+    'E':[]
+}
+print (graph)
+
+visited=set()
+def dfs(visited,graph,root):
+    if root not in visited:
+        print(root)
+        visited.add(root)
+        for neighbour in graph[root]:
+            dfs(visited, graph,neighbour)
+
+dfs(visited,graph,'A')
+
+#BFS
+graph = {
+  'A' : ['B','C'],
+  'B' : ['D', 'A'],
+  'C' : ['E'],
+  'D' : [],
+  'E' : ['F'],
+  'F' : []
+}
+
+visited = []
+queue = []
+
+def bfs(visited, graph, node):
+  visited.append(node)
+  queue.append(node)
+
+  while queue:
+    m = queue.pop(0)
+    print (m, end = " ")
+
+    for neighbour in graph[m]:
+      if neighbour not in visited:
+        visited.append(neighbour)
+        queue.append(neighbour)
+
+print("Following is the Breadth-First Search")
+bfs(visited, graph, 'A')
+
+
+print("\nA* ALGO")
+#A* ALGO
+def aStarAlgo(start_node, stop_node):
+    open_set = set([start_node])
+    closed_set = set()
+    g = {}
+    parents = {}
+    g[start_node] = 0
+    parents[start_node] = start_node
+
+    while len(open_set) > 0:
+        n = None
+        for v in open_set:
+            if n is None or g[v] + heuristic(v) < g[n] + heuristic(n):
+                n = v
+
+        if n is None:
+            print('Path does not exist!')
+            return None
+
+        if n == stop_node:
+            path = []
+            while parents[n] != n:
+                path.append(n)
+                n = parents[n]
+            path.append(start_node)
+            path.reverse()
+            print('Path found:', path)
+            return path
+
+        open_set.remove(n)
+        closed_set.add(n)
+
+        for (m, weight) in get_neighbors(n):
+            if m in closed_set:
+                continue
+
+            if m not in open_set:
+                open_set.add(m)
+            elif g[m] <= g[n] + weight:
+                continue
+
+            parents[m] = n
+            g[m] = g[n] + weight
+
+    print('Path does not exist!')
+    return None
+
+def get_neighbors(v):
+    if v in Graph_nodes:
+        return Graph_nodes[v]
+    else:
+        return None
+
+def heuristic(n):
+    H_dist = {'A': 11, 'B': 6, 'C': 99, 'D': 1, 'E': 7, 'G': 0}
+    return H_dist.get(n, float('inf'))
+
+Graph_nodes = {'A': [('B', 2), ('E', 3)], 'B': [('C', 1), ('G', 9)], 'C': [], 'E': [('D', 6)], 'D': [('G', 1)]}
+aStarAlgo('A', 'G')
+
+
+#PRIM'S ALGO
+INF = 9999999
+V = 5
+G = [[0, 19, 5, 0, 0],
+     [19, 0, 5, 9, 2],
+     [5, 5, 0, 1, 6],
+     [0, 9, 1, 0, 1],
+     [0, 2, 6, 1, 0]]
+selected = [0, 0, 0, 0, 0]
+no_edge = 0
+selected[0] = True
+print("Edge : Weight\n")
+sumx = 0
+while (no_edge < V - 1):
+    minimum = INF
+    x = 0
+    y = 0
+    for i in range(V):
+        if selected[i]:
+            for j in range(V):
+                if ((not selected[j]) and
+                    G[i][j]):
+                    if minimum > G[i][j]:
+                        minimum = G[i][j]
+                        x = i
+                        y = j
+                        print(str(x) + "-" + str(y) + ":" + str(G[x][y]))
+                        sumx += G[x][y]
+                        print(sumx)
+                        no_edge += 1
+                        selected[y] = True
+
+
+#DIJKSTRA ALGO
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = [[0 for _ in range(vertices)] for _ in range(vertices)]
+
+    def printSolution(self, dist):
+        print("Vertex \t Distance from Source")
+        for node in range(self.V):
+            print(node, "\t\t", dist[node])
+
+    def minDistance(self, dist, sptSet):
+        min = float("inf")
+        min_index = -1
+        for v in range(self.V):
+            if dist[v] < min and not sptSet[v]:
+                min = dist[v]
+                min_index = v
+        return min_index
+
+    def dijkstra(self, src):
+        dist = [float("inf")] * self.V
+        dist[src] = 0
+        sptSet = [False] * self.V
+
+        for _ in range(self.V):
+            u = self.minDistance(dist, sptSet)
+            sptSet[u] = True
+            for v in range(self.V):
+                if (
+                    self.graph[u][v] > 0
+                    and not sptSet[v]
+                    and dist[v] > dist[u] + self.graph[u][v]
+                ):
+                    dist[v] = dist[u] + self.graph[u][v]
+
+        self.printSolution(dist)
+
+
+g = Graph(9)
+g.graph = [
+    [0, 4, 0, 0, 0, 0, 0, 8, 0],
+    [4, 0, 8, 0, 0, 0, 0, 11, 0],
+    [0, 8, 0, 7, 0, 4, 0, 0, 2],
+    [0, 0, 7, 0, 9, 14, 0, 0, 0],
+    [0, 0, 0, 9, 0, 10, 0, 0, 0],
+    [0, 0, 4, 14, 10, 0, 2, 0, 0],
+    [0, 0, 0, 0, 0, 2, 0, 1, 6],
+    [8, 11, 0, 0, 0, 0, 1, 0, 7],
+    [0, 0, 2, 0, 0, 0, 6, 7, 0],
+]
+g.dijkstra(0)
+
+
+
+
+#N-QUEEN ALGO
+global N
+N = 4
+
+def printSolution(board):
+    for i in range(N):
+        for j in range(N):
+            print(board[i][j], end=' ')
+        print()
+
+def isSafe(board, row, col):
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    for i, j in zip(range(row, N, 1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    return True
+
+def solveNQUtil(board, col):
+    if col >= N:
+        return True
+
+    for i in range(N):
+        if isSafe(board, i, col):
+            board[i][col] = 1
+            if solveNQUtil(board, col + 1) == True:
+                return True
+            board[i][col] = 0
+
+    return False
+
+def solveNQ():
+    board = [[0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0]]
+
+    if solveNQUtil(board, 0) == False:
+        print("Solution does not exist")
+        return False
+
+    printSolution(board)
+    return True
+
+solveNQ()
